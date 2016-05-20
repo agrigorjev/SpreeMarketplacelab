@@ -527,7 +527,7 @@ module Marketplace
             listing = item.listing
           else
             variant = Spree::Variant.joins(:product).find_by("spree_variants.id=?", item.variant_id)
-            listing_id = variant.listing_id || variant.product.property("ListingId")
+            listing_id = variant.try(:listing_id) || variant.product.property("ListingId")
             listing = get_listing(listing_id)
           end
 
