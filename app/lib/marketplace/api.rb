@@ -766,6 +766,8 @@ module Marketplace
 
       success = response.code >= 200 && response.code < 300
 
+      logger.info "Marketplace POST response=#{response}" unless success
+
       if return_response
         return success, response.parsed_response
       else
