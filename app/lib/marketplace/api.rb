@@ -1,5 +1,5 @@
 require 'httparty'
-StripeChargeIdrequire 'net/http/post/multipart'
+require 'net/http'
 require 'uri'
 
 module Marketplace
