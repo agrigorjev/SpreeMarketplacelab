@@ -1,5 +1,5 @@
 require 'httparty'
-require 'net/http/post/multipart'
+StripeChargeIdrequire 'net/http/post/multipart'
 require 'uri'
 
 module Marketplace
@@ -555,32 +555,27 @@ module Marketplace
                                         ShippingType: get_shipping_type(spree_order, item)
                                       })
 
-          charge_id = get_charge_id(spree_order.payments, shipment, item) unless charge_id
-          order_dto[:OrderItemGroupModels].push({
-                                                  StoreOrderItemIds: [spree_order.number + "-" + item.id.to_s],
-                                                  OptionTypeModels: [
-                                                    {
-                                                      StoreOptionTypeId: "StripeChargeId",
-                                                      OptionDetailModels: [
-                                                        {
-                                                          Key: "StripeChargeId",
-                                                          Value: charge_id
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                })
+          if charge_id
+            order_dto[:OrderItemGroupModels].push({
+                                                    StoreOrderItemIds: [spree_order.number + "-" + item.id.to_s],
+                                                    OptionTypeModels: [
+                                                      {
+                                                        StoreOptionTypeId: "StripeChargeId",
+                                                        OptionDetailModels: [
+                                                          {
+                                                            Key: "StripeChargeId",
+                                                            Value: charge_id
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  })
 
+          end
         end
       end
 
       return order_dto.to_json
-    end
-
-    def get_charge_id payments, shipment, item
-      cost = item.price + shipment.cost
-      payment = payments.find{|payment| payment.amount == cost}
-      payment.response_code
     end
 
     def listing_condition(condition)
