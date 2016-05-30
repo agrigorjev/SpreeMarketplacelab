@@ -104,6 +104,12 @@ module Marketplace
 
       is_ingredients_present = spree_product.has_attribute?(:ingredients)
 
+      if marketplace_product['product_identifiers'].present?
+        marketplace_product['product_identifiers'].each do |item|
+          spree_product.set_property(item['product_identifier_type'], item['value'])
+        end
+      end
+
       if marketplace_product['attributes'] != nil
         properties = {}
         marketplace_product['attributes'].each do |attr|
