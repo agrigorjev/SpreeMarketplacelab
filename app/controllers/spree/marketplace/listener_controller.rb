@@ -33,12 +33,22 @@ module Spree
       end
 
       def product_created
+        product_sku = request.POST["StoreProductId"]
         marketplace_id = request.POST["MarketplaceId"]
         marketplace_api = ::Marketplace::Api.instance
 
         logger.info "Product created hook for marketplace ID: #{marketplace_id}"
 
         stopwatch = ::Stopwatch.new
+
+        if product_sku.blank?
+          marketplace_id = request.POST["MarketplaceId"]
+          product_sku = marketplace_api.generate_store_product_id marketplace_id
+          result = marketplace_api.put_product_spi marketplace_id, product_sku
+          logger.info "result=#{result.inspect}"
+        end
+
+        spree_product = marketplace_api.create_or_update_product(product_sku, price)
 
         marketplace_api.notify(:product_created, marketplace_id)
 
