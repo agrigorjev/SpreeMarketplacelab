@@ -48,8 +48,6 @@ module Spree
           logger.info "result=#{result.inspect}"
         end
 
-        spree_product = marketplace_api.create_or_update_product(product_sku, price)
-
         marketplace_api.notify(:product_created, marketplace_id)
 
         logger.info "Product created hook for marketplace ID: #{marketplace_id} processed, took #{stopwatch.elapsed_time}"
