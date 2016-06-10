@@ -102,8 +102,6 @@ module Marketplace
 
       logger.info "Product saved, SKU: #{store_product_id}, took #{s.elapsed_time}"
 
-      is_ingredients_present = spree_product.has_attribute?(:ingredients)
-
       if marketplace_product['product_identifiers'].present?
         marketplace_product['product_identifiers'].each do |item|
           spree_product.set_property(item['product_identifier_type'], item['value'])
@@ -117,8 +115,10 @@ module Marketplace
           properties[attr['name']] << attr['value']
         end
         properties.each do |name, values|
-          if is_ingredients_present && name == 'Ingredients'
+          if name == 'Ingredients'
             spree_product.ingredients = values.join(', ')
+          elsif name == 'Dietary and Lifestyle'
+            spree_product.dietary_and_lifestyle = values.join(', ')
           else
             spree_product.set_property(name, values.join(', ').truncate(250, omission: '...'))
           end
